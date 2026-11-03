@@ -1,0 +1,1289 @@
+@if (!authenticated) {
+  <main class="auth-shell">
+    <section class="auth-story" aria-label="Rituals Bar e Wellness Club">
+      <div class="auth-brand brand">
+        <span class="brand-mark">R</span>
+        <span>
+          rituals
+          <span class="brand-caption">BAR & WELLNESS CLUB</span>
+        </span>
+      </div>
+      <div class="auth-orbit" aria-hidden="true">
+        <span class="orbit-inner"></span>
+        <span class="orbit-line"></span>
+        <span class="orbit-leaf leaf-one"></span>
+        <span class="orbit-leaf leaf-two"></span>
+        <span class="orbit-leaf leaf-three"></span>
+        <span class="orbit-center">R</span>
+      </div>
+      <div class="auth-story-copy">
+        <div class="eyebrow">CUIDAR ESTÁ EM CADA DETALHE</div>
+        <h1>
+          Boas experiências.
+          <br />
+          Uma gestão em equilíbrio.
+        </h1>
+        <p>
+          Mais presença para receber.
+          <br />
+          Mais tranquilidade para cuidar do que importa.
+        </p>
+      </div>
+      <div class="auth-story-footer">
+        <span>RITUALS CLUB</span>
+        <span>JARDINS · SÃO PAULO</span>
+      </div>
+    </section>
+    <section class="auth-panel">
+      <span class="auth-demo-tag">
+        <span class="demo-dot"></span>
+        AMBIENTE DEMONSTRATIVO
+      </span>
+      <div class="auth-form-wrap">
+        <span class="auth-welcome-icon"><i class="feather" [ngClass]="authMode === 'login' ? 'icon-sun' : 'icon-lock'"></i></span>
+        <div class="eyebrow">SEU ESPAÇO DE GESTÃO</div>
+        <h2>{{ authMode === 'login' ? 'Bem-vindo ao Rituals.' : 'Recuperar acesso' }}</h2>
+        <p class="auth-description">
+          {{ authMode === 'login' ? 'Entre para acompanhar o ritmo do seu clube.' : 'Vamos simular a recuperação da sua senha.' }}
+        </p>
+        @if (authMode === 'login') {
+          <form (ngSubmit)="login()">
+            <label class="field">
+              E-mail de acesso
+              <input
+                type="email"
+                name="loginEmail"
+                [(ngModel)]="loginEmail"
+                autocomplete="username"
+                placeholder="seu.email@example.com"
+                required
+                maxlength="120"
+              />
+            </label>
+            <label class="field">
+              Senha
+              <div class="password-field">
+                <input
+                  [type]="showPassword ? 'text' : 'password'"
+                  name="loginPassword"
+                  [(ngModel)]="loginPassword"
+                  autocomplete="current-password"
+                  placeholder="Digite sua senha de demonstração"
+                  required
+                />
+                <button
+                  type="button"
+                  (click)="showPassword = !showPassword"
+                  [attr.aria-label]="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
+                  [attr.aria-pressed]="showPassword"
+                >
+                  <i class="feather" [ngClass]="showPassword ? 'icon-eye-off' : 'icon-eye'"></i>
+                </button>
+              </div>
+            </label>
+            <div class="auth-options">
+              <span>
+                <i class="feather icon-shield"></i>
+                Acesso da equipe
+              </span>
+              <button type="button" class="text-button" (click)="authMode = 'recovery'; recoverySent = false; authError = ''">
+                Esqueceu sua senha?
+              </button>
+            </div>
+            @if (authError) {
+              <div class="form-error" role="alert">{{ authError }}</div>
+            }
+            <button type="submit" class="btn-primary full auth-submit">
+              Entrar no workspace
+              <i class="feather icon-arrow-right"></i>
+            </button>
+          </form>
+          <div class="demo-access">
+            <div class="demo-access-heading">
+              <span>EXPERIMENTE UM PERFIL</span>
+              <span>
+                Senha:
+                <code>rituals123</code>
+              </span>
+            </div>
+            <div class="demo-profile-list">
+              @for (e of state.employees; track e.id) {
+                @if (e.active) {
+                  <button type="button" (click)="selectDemo(e)" [class.selected]="loginEmail === e.email">
+                    <span class="avatar">{{ initials(e.name) }}</span>
+                    <span>
+                      <strong>{{ e.role }}</strong>
+                      <small>{{ e.name }}</small>
+                    </span>
+                    <i class="feather icon-arrow-up-right"></i>
+                  </button>
+                }
+              }
+            </div>
+            <p>Selecione um perfil para preencher os dados e clique em entrar.</p>
+          </div>
+        } @else {
+          @if (!recoverySent) {
+            <form (ngSubmit)="recoverPassword()">
+              <label class="field">
+                E-mail de acesso
+                <input
+                  type="email"
+                  name="recoveryEmail"
+                  [(ngModel)]="loginEmail"
+                  required
+                  autocomplete="email"
+                  placeholder="seu.email@example.com"
+                />
+              </label>
+              <button type="submit" class="btn-primary full auth-submit">
+                Simular recuperação
+                <i class="feather icon-arrow-right"></i>
+              </button>
+            </form>
+          } @else {
+            <div class="auth-recovery-result" role="status">
+              <i class="feather icon-check-circle"></i>
+              <h3>Solicitação simulada</h3>
+              <p>Em uma versão integrada, você receberia as instruções por e-mail. Nenhum e-mail foi enviado neste mock.</p>
+              <p>
+                Para entrar agora, use a senha de demonstração
+                <strong>rituals123</strong>
+                .
+              </p>
+            </div>
+          }
+          <button type="button" class="text-button auth-back" (click)="authMode = 'login'; authError = ''">
+            <i class="feather icon-arrow-left"></i>
+            Voltar para o login
+          </button>
+        }
+      </div>
+      <p class="auth-bottom">
+        <i class="feather icon-info"></i>
+        Mock sem API. Use apenas os acessos fictícios.
+      </p>
+    </section>
+  </main>
+} @else {
+  <div class="app-shell">
+    @if (mobileNav) {
+      <button class="nav-scrim" aria-label="Fechar navegação" (click)="mobileNav = false"></button>
+    }
+    <aside class="sidebar" [class.mobile-open]="mobileNav">
+      <a class="brand" href="#" (click)="$event.preventDefault(); go('overview')">
+        <span class="brand-mark">R</span>
+        <span>
+          rituals
+          <span class="brand-caption">BAR & WELLNESS CLUB</span>
+        </span>
+      </a>
+      <div class="workspace">
+        <span class="workspace-symbol"><i class="feather icon-sun"></i></span>
+        <span>
+          Rituals Club
+          <small>Unidade Jardins · São Paulo</small>
+        </span>
+        <i class="feather icon-chevron-down"></i>
+      </div>
+      <nav aria-label="Menu principal">
+        @for (item of nav; track item.id) {
+          @if (item.group && allowed(item.id)) {
+            <p class="nav-label">{{ item.group }}</p>
+          }
+          @if (allowed(item.id)) {
+            <button [class.active]="page === item.id" (click)="go(item.id)">
+              <i class="feather" [ngClass]="'icon-' + item.icon"></i>
+              <span>{{ item.name }}</span>
+              @if (item.id === 'orders') {
+                <span class="nav-count">{{ openOrders.length }}</span>
+              }
+            </button>
+          }
+        }
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="demo-card">
+          <span class="demo-dot"></span>
+          Ambiente demonstrativo
+          <p>Explore. Experimente. Imagine.</p>
+        </div>
+        @if (role === 'Gerente') {
+          <button class="reset-link" (click)="openModal('reset')">
+            <i class="feather icon-refresh-cw"></i>
+            Restaurar demonstração
+          </button>
+        }
+        <span class="sidebar-version">
+          RITUALS MANAGEMENT
+          <span>v1.0</span>
+        </span>
+      </div>
+    </aside>
+    <div class="main-shell">
+      <header class="topbar">
+        <div class="breadcrumb">
+          <button class="icon-button mobile-toggle" (click)="mobileNav = !mobileNav" aria-label="Abrir menu">
+            <i class="feather icon-menu"></i>
+          </button>
+          <span>Workspace</span>
+          <i class="feather icon-chevron-right"></i>
+          <strong>{{ title }}</strong>
+        </div>
+        <div class="topbar-right">
+          <button class="icon-button" (click)="logout()" aria-label="Sair do workspace" title="Sair do workspace">
+            <i class="feather icon-log-out"></i>
+          </button>
+          <span class="status-pill" [class.closed]="!state.cashOpen">
+            <span></span>
+            Caixa {{ state.cashOpen ? 'aberto' : 'fechado' }}
+          </span>
+          <span class="topbar-divider"></span>
+          <div class="profile">
+            <span class="avatar gold">{{ initials(employee.name) }}</span>
+            <label>
+              <span class="sr-only">Simular acesso de funcionário</span>
+              <select [(ngModel)]="currentEmployeeId" (ngModelChange)="switchEmployee()">
+                @for (e of state.employees; track e.id) {
+                  @if (e.active) {
+                    <option [ngValue]="e.id">{{ e.name }} · {{ e.role }}</option>
+                  }
+                }
+              </select>
+              <small>Trocar acesso · demonstração</small>
+            </label>
+          </div>
+        </div>
+      </header>
+      <main id="main-content">
+        <div class="page-heading">
+          <div>
+            <div class="eyebrow">RITUALS · BAR & WELLNESS</div>
+            <h1>{{ page === 'overview' ? 'Cada detalhe, em equilíbrio.' : title }}</h1>
+            <p>
+              {{
+                page === 'overview'
+                  ? 'Uma visão do seu bar, para um dia que flui melhor.'
+                  : page === 'orders'
+                    ? 'Do primeiro pedido ao último detalhe.'
+                    : page === 'inventory'
+                      ? 'Tudo o que o seu bar precisa, no momento certo.'
+                      : page === 'clients'
+                        ? 'Cuidado que começa por conhecer cada pessoa.'
+                        : page === 'cash'
+                          ? 'Clareza em cada entrada e saída.'
+                          : page === 'credits'
+                            ? 'Mais liberdade para os seus clientes.'
+                            : page === 'sales'
+                              ? 'Acompanhe os resultados de cada experiência.'
+                              : page === 'suppliers'
+                                ? 'Boas experiências começam com bons parceiros.'
+                                : 'As pessoas que fazem o Rituals acontecer.'
+              }}
+            </p>
+          </div>
+          <div class="heading-actions">
+            @if (page === 'overview') {
+              <span class="date-label">
+                <i class="feather icon-calendar"></i>
+                {{ today | date: 'dd/MM/yyyy' }}
+              </span>
+            }
+            @if (page === 'overview' || page === 'orders') {
+              <button class="btn-primary" (click)="openModal('order')">
+                <i class="feather icon-plus"></i>
+                Nova comanda
+              </button>
+            }
+            @if (page === 'clients') {
+              <button class="btn-primary" (click)="openModal('client')">
+                <i class="feather icon-plus"></i>
+                Novo cliente
+              </button>
+            }
+            @if (page === 'inventory') {
+              <button class="btn-primary" (click)="openModal('product')">
+                <i class="feather icon-plus"></i>
+                Novo produto
+              </button>
+            }
+            @if (page === 'suppliers') {
+              <button class="btn-primary" (click)="openModal('supplier')">
+                <i class="feather icon-plus"></i>
+                Novo fornecedor
+              </button>
+            }
+            @if (page === 'staff') {
+              <button class="btn-primary" (click)="openModal('staff')">
+                <i class="feather icon-plus"></i>
+                Novo funcionário
+              </button>
+            }
+            @if (page === 'credits') {
+              <button class="btn-primary" (click)="openModal('credit')">
+                <i class="feather icon-plus"></i>
+                Adicionar crédito
+              </button>
+            }
+            @if (page === 'sales') {
+              <button class="btn-outline" (click)="exportSales()">
+                <i class="feather icon-download"></i>
+                Exportar vendas
+              </button>
+            }
+            @if (page === 'cash') {
+              <button class="btn-primary" (click)="openModal(state.cashOpen ? 'movement' : 'cashOpen')">
+                <i class="feather icon-plus"></i>
+                {{ state.cashOpen ? 'Nova movimentação' : 'Abrir caixa' }}
+              </button>
+            }
+          </div>
+        </div>
+
+        @if (page === 'overview') {
+          <section class="metrics" aria-label="Resumo da operação">
+            <app-card [hidHeader]="true">
+              <div class="metric-top">
+                <span>Vendas de hoje</span>
+                <i class="feather icon-trending-up"></i>
+              </div>
+              <div class="metric-value">{{ money(revenue) }}</div>
+              <div class="metric-foot">
+                <span class="positive">{{ todaysSales.length }} vendas</span>
+                <span>concluídas hoje</span>
+              </div>
+            </app-card>
+            <app-card [hidHeader]="true">
+              <div class="metric-top">
+                <span>Comandas abertas</span>
+                <i class="feather icon-file-text"></i>
+              </div>
+              <div class="metric-value">{{ openOrders.length.toString().padStart(2, '0') }}</div>
+              <div class="metric-foot">
+                <span class="gold-text">{{ money(pending) }}</span>
+                <span>em consumo</span>
+              </div>
+            </app-card>
+            <app-card [hidHeader]="true">
+              <div class="metric-top">
+                <span>Ticket médio</span>
+                <i class="feather icon-bar-chart-2"></i>
+              </div>
+              <div class="metric-value">{{ money(todaysSales.length ? revenue / todaysSales.length : 0) }}</div>
+              <div class="metric-foot"><span>Por comanda finalizada hoje</span></div>
+            </app-card>
+            <app-card [hidHeader]="true">
+              <div class="metric-top">
+                <span>Clientes do clube</span>
+                <i class="feather icon-users"></i>
+              </div>
+              <div class="metric-value">{{ state.clients.length.toString().padStart(2, '0') }}</div>
+              <div class="metric-foot">
+                <span class="positive">Relacionamentos</span>
+                <span>que importam</span>
+              </div>
+            </app-card>
+          </section>
+          <div class="overview-middle">
+            <app-card cardTitle="O ritmo do dia" [options]="false">
+              <div class="chart-heading">
+                <div>
+                  <span class="chart-total">{{ money(revenue) }}</span>
+                  <small>Vendas a cada 2 horas · hoje</small>
+                </div>
+                <span class="chart-key">
+                  <b></b>
+                  Vendas
+                </span>
+              </div>
+              <div class="bar-chart">
+                <div class="chart-axis">
+                  <span>{{ money(chartMax) }}</span>
+                  <span>{{ money(chartMax / 2) }}</span>
+                  <span>R$ 0</span>
+                </div>
+                <div class="chart-bars">
+                  @for (b of chartBars; track b.hour) {
+                    <div class="bar-column">
+                      <div class="bar-space">
+                        <div
+                          class="bar"
+                          [style.height.%]="(b.value / chartMax) * 100"
+                          [class.has-value]="b.value > 0"
+                          [attr.title]="b.hour + 'h–' + (b.hour + 2) + 'h: ' + money(b.value)"
+                        ></div>
+                      </div>
+                      <span>{{ b.hour }}h</span>
+                    </div>
+                  }
+                </div>
+              </div>
+              <div class="chart-note">
+                <i class="feather icon-info"></i>
+                Resultados atualizados a cada comanda finalizada.
+              </div>
+            </app-card>
+            <app-card cardTitle="Os favoritos do clube" [options]="false">
+              <p class="card-subtitle">Mais pedidos nas comandas concluídas</p>
+              <div class="popular-list">
+                @for (p of popular; track p.id; let n = $index) {
+                  <div class="popular-item">
+                    <span class="product-symbol" [class.tone-two]="n % 2 === 1">
+                      <i class="feather" [ngClass]="p.category === 'Cozinha' ? 'icon-sun' : 'icon-droplet'"></i>
+                    </span>
+                    <div>
+                      <strong>{{ p.name }}</strong>
+                      <small>{{ p.category }}</small>
+                    </div>
+                    <span>
+                      {{ p.qty }}
+                      <small>vendidos</small>
+                    </span>
+                  </div>
+                }
+              </div>
+            </app-card>
+          </div>
+          <div class="overview-bottom">
+            <app-card cardTitle="Comandas em andamento" [options]="false">
+              <button class="card-header-action" (click)="go('orders')">
+                Ver todas
+                <i class="feather icon-arrow-up-right"></i>
+              </button>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Comanda / Cliente</th>
+                      <th>Local</th>
+                      <th>Valor</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (o of openOrders.slice(0, 4); track o.id) {
+                      <tr>
+                        <td>
+                          <div class="person-cell">
+                            <span class="avatar">{{ initials(client(o.clientId).name) }}</span>
+                            <div>
+                              <strong>{{ client(o.clientId).name }}</strong>
+                              <small>#{{ o.id }} · {{ time(o.opened) }}</small>
+                            </div>
+                          </div>
+                        </td>
+                        <td>{{ o.location }}</td>
+                        <td class="amount">{{ money(total(o)) }}</td>
+                        <td>
+                          <button class="icon-button" (click)="viewOrder(o)" [attr.aria-label]="'Abrir comanda ' + o.id">
+                            <i class="feather icon-arrow-up-right"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    } @empty {
+                      <tr><td colspan="4" class="empty">Tudo em dia. Nenhuma comanda aberta.</td></tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </app-card>
+            <section class="attention-card">
+              <span class="attention-icon"><i class="feather icon-package"></i></span>
+              <div class="eyebrow">ATENÇÃO AO ESTOQUE</div>
+              <h2>
+                Um cuidado a mais.
+                <br />
+                Antes de faltar.
+              </h2>
+              <p>{{ lowStock.length }} produtos estão no estoque mínimo ou abaixo dele.</p>
+              @for (p of lowStock.slice(0, 2); track p.id) {
+                <div class="stock-alert-row">
+                  <span>{{ p.name }}</span>
+                  <strong>{{ p.stock }} {{ p.unit }}</strong>
+                </div>
+              }
+              @if (allowed('inventory')) {
+                <button class="btn-outline" (click)="go('inventory'); category = 'Baixo estoque'">
+                  Conferir estoque
+                  <i class="feather icon-arrow-right"></i>
+                </button>
+              }
+            </section>
+          </div>
+        }
+
+        @if (page === 'orders') {
+          <div class="section-toolbar">
+            <div class="tabs">
+              @for (s of ['Todas', 'Aberta', 'Fechada']; track s) {
+                <button [class.active]="status === s" (click)="status = s">
+                  {{ s === 'Todas' ? 'Todas as comandas' : s === 'Aberta' ? 'Abertas' : 'Fechadas' }}
+                  <span>
+                    {{ s === 'Todas' ? state.orders.length : s === 'Aberta' ? openOrders.length : state.orders.length - openOrders.length }}
+                  </span>
+                </button>
+              }
+            </div>
+            <label class="search-field">
+              <i class="feather icon-search"></i>
+              <input [(ngModel)]="search" placeholder="Buscar cliente, local ou comanda" aria-label="Buscar comandas" />
+            </label>
+          </div>
+          <div class="order-grid">
+            @for (o of filteredOrders; track o.id) {
+              <button class="order-card" (click)="viewOrder(o)">
+                <div class="order-card-top">
+                  <span class="order-number">#{{ o.id }}</span>
+                  <span class="badge" [class.green]="o.status === 'Aberta'">{{ o.status }}</span>
+                </div>
+                <div class="person-cell">
+                  <span class="avatar large">{{ initials(client(o.clientId).name) }}</span>
+                  <div>
+                    <h3>{{ client(o.clientId).name }}</h3>
+                    <small>{{ client(o.clientId).tier }}</small>
+                  </div>
+                </div>
+                <div class="order-location">
+                  <i class="feather icon-map-pin"></i>
+                  {{ o.location }}
+                  <span>
+                    <i class="feather icon-clock"></i>
+                    {{ time(o.opened) }}
+                  </span>
+                </div>
+                <div class="order-card-bottom">
+                  <span>{{ o.items.length }} produtos</span>
+                  <strong>
+                    {{ money(total(o)) }}
+                    <i class="feather icon-arrow-up-right"></i>
+                  </strong>
+                </div>
+              </button>
+            } @empty {
+              <div class="empty wide">Nenhuma comanda encontrada. Experimente outra busca.</div>
+            }
+          </div>
+        }
+
+        @if (page === 'sales') {
+          <div class="summary-strip">
+            <div>
+              <span>Faturamento de hoje</span>
+              <strong>{{ money(revenue) }}</strong>
+            </div>
+            <div>
+              <span>Vendas de hoje</span>
+              <strong>{{ todaysSales.length }}</strong>
+            </div>
+            <div>
+              <span>Resultado do filtro</span>
+              <strong>{{ filteredSales.length }} vendas</strong>
+            </div>
+          </div>
+          <app-card cardTitle="Histórico de vendas" [options]="false">
+            <div class="section-toolbar inner">
+              <label class="search-field">
+                <i class="feather icon-search"></i>
+                <input [(ngModel)]="search" placeholder="Buscar cliente ou comanda" aria-label="Buscar vendas" />
+              </label>
+              <select [(ngModel)]="paymentFilter" aria-label="Filtrar pagamento">
+                @for (p of ['Todos', 'Pix', 'Cartão', 'Dinheiro', 'Crédito do cliente']; track p) {
+                  <option>{{ p }}</option>
+                }
+              </select>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Comanda</th>
+                    <th>Cliente</th>
+                    <th>Data / Hora</th>
+                    <th>Pagamento</th>
+                    <th>Total</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (s of filteredSales; track s.id) {
+                    <tr>
+                      <td class="gold-text">#{{ s.orderId }}</td>
+                      <td>{{ client(s.clientId).name }}</td>
+                      <td>{{ date(s.date) }} · {{ time(s.date) }}</td>
+                      <td>
+                        <span class="badge">{{ s.payment }}</span>
+                      </td>
+                      <td class="amount">{{ money(s.total) }}</td>
+                      <td><button class="text-button" (click)="selectedId = s.orderId">Detalhes</button></td>
+                    </tr>
+                  } @empty {
+                    <tr><td colspan="6" class="empty">Nenhuma venda encontrada.</td></tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </app-card>
+        }
+
+        @if (page === 'inventory') {
+          <div class="summary-strip">
+            <div>
+              <span>Produtos cadastrados</span>
+              <strong>{{ state.products.length }}</strong>
+            </div>
+            <div>
+              <span>Precisam de reposição</span>
+              <strong class="gold-text">{{ lowStock.length }}</strong>
+            </div>
+            <div>
+              <span>Controle de estoque</span>
+              <strong class="small-value">Baixa ao fechar comanda</strong>
+            </div>
+          </div>
+          <app-card cardTitle="Produtos e insumos" [options]="false">
+            <div class="section-toolbar inner">
+              <label class="search-field">
+                <i class="feather icon-search"></i>
+                <input [(ngModel)]="search" placeholder="Buscar produto" aria-label="Buscar produto" />
+              </label>
+              <select [(ngModel)]="category" aria-label="Filtrar categoria">
+                <option>Todos</option>
+                <option>Baixo estoque</option>
+                @for (c of categories; track c) {
+                  <option>{{ c }}</option>
+                }
+              </select>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Produto</th>
+                    <th>Categoria</th>
+                    <th>Preço de venda</th>
+                    <th>Estoque / Mínimo</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (p of filteredProducts; track p.id) {
+                    <tr>
+                      <td>
+                        <strong>{{ p.name }}</strong>
+                      </td>
+                      <td>{{ p.category }}</td>
+                      <td>{{ money(p.price) }}</td>
+                      <td>{{ p.stock }} / {{ p.minimum }} {{ p.unit }}</td>
+                      <td>
+                        <span class="badge" [class.warning]="p.stock <= p.minimum" [class.green]="p.stock > p.minimum">
+                          {{ p.stock <= p.minimum ? 'Repor estoque' : 'Disponível' }}
+                        </span>
+                      </td>
+                      <td class="actions-cell">
+                        <button class="text-button" (click)="openModal('restock', p)">Repor</button>
+                        <button class="icon-button" (click)="openModal('product', p)" [attr.aria-label]="'Editar ' + p.name">
+                          <i class="feather icon-edit-2"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr><td colspan="6" class="empty">Nenhum produto encontrado.</td></tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </app-card>
+        }
+
+        @if (page === 'clients' || page === 'credits') {
+          @if (page === 'credits') {
+            <div class="credit-banner">
+              <div>
+                <span class="eyebrow">CRÉDITOS DO CLUBE</span>
+                <h2>{{ money(creditTotal) }}</h2>
+                <p>Saldo disponível entre {{ state.clients.length }} clientes cadastrados.</p>
+              </div>
+              <i class="feather icon-heart"></i>
+            </div>
+          }
+          <app-card [cardTitle]="page === 'clients' ? 'Relacionamentos do clube' : 'Saldos dos clientes'" [options]="false">
+            <div class="section-toolbar inner">
+              <label class="search-field">
+                <i class="feather icon-search"></i>
+                <input [(ngModel)]="search" placeholder="Buscar nome, e-mail ou telefone" aria-label="Buscar clientes" />
+              </label>
+              <span class="muted">{{ filteredClients.length }} clientes</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Contato</th>
+                    <th>Categoria</th>
+                    <th>Crédito disponível</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (c of filteredClients; track c.id) {
+                    <tr>
+                      <td>
+                        <div class="person-cell">
+                          <span class="avatar">{{ initials(c.name) }}</span>
+                          <strong>{{ c.name }}</strong>
+                        </div>
+                      </td>
+                      <td>
+                        {{ c.email }}
+                        <small>{{ c.phone }}</small>
+                      </td>
+                      <td>
+                        <span class="badge" [class.signature]="c.tier === 'Signature'">{{ c.tier }}</span>
+                      </td>
+                      <td class="amount gold-text">{{ money(c.credit) }}</td>
+                      <td>
+                        @if (page === 'clients') {
+                          <button class="icon-button" (click)="openModal('client', c)" [attr.aria-label]="'Editar ' + c.name">
+                            <i class="feather icon-edit-2"></i>
+                          </button>
+                        } @else {
+                          <button class="text-button" (click)="openModal('credit', c)">Adicionar crédito</button>
+                        }
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr><td colspan="5" class="empty">Nenhum cliente encontrado.</td></tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </app-card>
+          @if (page === 'credits') {
+            <app-card cardTitle="Extrato de créditos" [options]="false">
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Cliente</th>
+                      <th>Descrição</th>
+                      <th>Data</th>
+                      <th>Movimentação</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (c of state.credits; track c.id) {
+                      <tr>
+                        <td>{{ client(c.clientId).name }}</td>
+                        <td>{{ c.note }}</td>
+                        <td>{{ date(c.date) }} · {{ time(c.date) }}</td>
+                        <td [class.positive]="c.amount > 0" [class.negative]="c.amount < 0">
+                          {{ c.amount > 0 ? '+' : '' }}{{ money(c.amount) }}
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </app-card>
+          }
+        }
+
+        @if (page === 'cash') {
+          <div class="cash-layout">
+            <section class="cash-balance">
+              <div class="eyebrow">CAIXA · SESSÃO {{ state.session }}</div>
+              <span class="status-pill" [class.closed]="!state.cashOpen">
+                <span></span>
+                {{ state.cashOpen ? 'Em operação' : 'Encerrado' }}
+              </span>
+              <p>Saldo em dinheiro</p>
+              <h2>{{ money(cashBalance(state)) }}</h2>
+              <div class="cash-details">
+                <span>
+                  Saldo de abertura
+                  <strong>{{ money(state.opening) }}</strong>
+                </span>
+                <span>
+                  Movimentações
+                  <strong>{{ money(cashBalance(state) - state.opening) }}</strong>
+                </span>
+              </div>
+              <p class="muted">Pix, cartão e crédito não compõem o saldo da gaveta.</p>
+              @if (state.cashOpen) {
+                <button class="btn-outline" (click)="openModal('cashClose')">
+                  Encerrar caixa
+                  <i class="feather icon-lock"></i>
+                </button>
+              } @else {
+                <p>Encerrado em {{ date(state.cashClosedAt) }} às {{ time(state.cashClosedAt) }}</p>
+              }
+            </section>
+            <app-card cardTitle="Movimentações do caixa" [options]="false">
+              <p class="card-subtitle">Histórico de entradas e saídas em dinheiro</p>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Descrição</th>
+                      <th>Tipo / Sessão</th>
+                      <th>Data</th>
+                      <th>Valor</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (m of state.movements; track m.id) {
+                      <tr>
+                        <td>{{ m.note }}</td>
+                        <td>
+                          {{ m.type }}
+                          <small>Sessão {{ m.session }}</small>
+                        </td>
+                        <td>{{ date(m.date) }} · {{ time(m.date) }}</td>
+                        <td [class.positive]="m.amount > 0" [class.negative]="m.amount < 0">{{ money(m.amount) }}</td>
+                      </tr>
+                    } @empty {
+                      <tr><td colspan="4" class="empty">Nenhuma movimentação registrada.</td></tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </app-card>
+          </div>
+        }
+
+        @if (page === 'suppliers') {
+          <div class="section-toolbar">
+            <label class="search-field">
+              <i class="feather icon-search"></i>
+              <input [(ngModel)]="search" placeholder="Buscar fornecedor" aria-label="Buscar fornecedor" />
+            </label>
+            <span class="muted">{{ state.suppliers.length }} parceiros cadastrados</span>
+          </div>
+          <div class="supplier-grid">
+            @for (s of state.suppliers; track s.id) {
+              @if (matches(s.name + s.category)) {
+                <article class="supplier-card">
+                  <div class="supplier-top">
+                    <span class="product-symbol"><i class="feather icon-briefcase"></i></span>
+                    <button class="icon-button" (click)="openModal('supplier', s)" [attr.aria-label]="'Editar ' + s.name">
+                      <i class="feather icon-edit-2"></i>
+                    </button>
+                  </div>
+                  <span class="eyebrow">{{ s.category }}</span>
+                  <h3>{{ s.name }}</h3>
+                  <p>{{ s.contact }}</p>
+                  <div class="contact-line">
+                    <i class="feather icon-mail"></i>
+                    {{ s.email }}
+                  </div>
+                  <div class="contact-line">
+                    <i class="feather icon-phone"></i>
+                    {{ s.phone }}
+                  </div>
+                </article>
+              }
+            }
+          </div>
+        }
+        @if (page === 'staff') {
+          <div class="info-banner">
+            <i class="feather icon-info"></i>
+            Acesso simulado: use o seletor no topo para experimentar as permissões de cada funcionário.
+          </div>
+          <app-card cardTitle="Equipe e permissões" [options]="false">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Funcionário</th>
+                    <th>E-mail</th>
+                    <th>Perfil de acesso</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (e of state.employees; track e.id) {
+                    <tr>
+                      <td>
+                        <div class="person-cell">
+                          <span class="avatar">{{ initials(e.name) }}</span>
+                          <strong>{{ e.name }}</strong>
+                        </div>
+                      </td>
+                      <td>{{ e.email }}</td>
+                      <td>
+                        <span class="badge">{{ e.role }}</span>
+                      </td>
+                      <td>
+                        <span class="badge" [class.green]="e.active">{{ e.active ? 'Ativo' : 'Inativo' }}</span>
+                      </td>
+                      <td>
+                        <button class="icon-button" (click)="openModal('staff', e)" [attr.aria-label]="'Editar ' + e.name">
+                          <i class="feather icon-edit-2"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </app-card>
+          <div class="permissions-grid">
+            <article>
+              <i class="feather icon-shield"></i>
+              <h3>Gerente</h3>
+              <p>Acesso a todos os módulos, cadastros e configurações da equipe.</p>
+            </article>
+            <article>
+              <i class="feather icon-credit-card"></i>
+              <h3>Caixa</h3>
+              <p>Comandas, vendas, caixa, clientes e créditos. Pode finalizar pagamentos.</p>
+            </article>
+            <article>
+              <i class="feather icon-droplet"></i>
+              <h3>Atendente</h3>
+              <p>Visão geral, clientes e montagem de comandas. Fechamento feito pelo caixa.</p>
+            </article>
+          </div>
+        }
+        <footer>
+          <span>
+            <span class="footer-mark">R</span>
+            Feito para uma operação em equilíbrio.
+          </span>
+          <span>Dados fictícios · Sem integração com API</span>
+        </footer>
+      </main>
+    </div>
+  </div>
+
+  @if (selected; as order) {
+    <div class="drawer-backdrop" (click)="selectedId = null"></div>
+    <section class="order-drawer" appDialogFocus role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+      <header>
+        <div>
+          <div class="eyebrow">{{ order.location }}</div>
+          <h2 id="drawer-title">Comanda #{{ order.id }}</h2>
+        </div>
+        <button class="icon-button" (click)="selectedId = null" aria-label="Fechar comanda"><i class="feather icon-x"></i></button>
+      </header>
+      <div class="drawer-scroll">
+        <div class="drawer-client">
+          <span class="avatar large">{{ initials(client(order.clientId).name) }}</span>
+          <div>
+            <h3>{{ client(order.clientId).name }}</h3>
+            <small>{{ client(order.clientId).email }}</small>
+            <small>{{ client(order.clientId).phone }}</small>
+          </div>
+          <span class="badge" [class.green]="order.status === 'Aberta'">{{ order.status }}</span>
+        </div>
+        <div class="order-meta">Aberta às {{ time(order.opened) }} · {{ order.staff }}</div>
+        <h3 class="subheading">Itens da comanda</h3>
+        @for (item of order.items; track item.productId) {
+          <div class="line-item">
+            <div>
+              <strong>{{ item.name }}</strong>
+              <small>{{ money(item.price) }} / un</small>
+            </div>
+            @if (order.status === 'Aberta') {
+              <div class="quantity">
+                <button (click)="changeQty(item.productId, -1)" [attr.aria-label]="'Remover uma unidade de ' + item.name">−</button>
+                <span>{{ item.qty }}</span>
+                <button (click)="changeQty(item.productId, 1)" [attr.aria-label]="'Adicionar uma unidade de ' + item.name">+</button>
+              </div>
+            } @else {
+              <span>{{ item.qty }} un</span>
+            }
+            <strong>{{ money(item.price * item.qty) }}</strong>
+          </div>
+        } @empty {
+          <p class="empty">Escolha os primeiros itens abaixo.</p>
+        }
+        @if (order.status === 'Aberta') {
+          <h3 class="subheading">Adicionar produtos</h3>
+          <label class="search-field">
+            <i class="feather icon-search"></i>
+            <input [(ngModel)]="productSearch" placeholder="Buscar no cardápio" aria-label="Buscar no cardápio" />
+          </label>
+          <div class="catalog">
+            @for (p of catalog; track p.id) {
+              <button (click)="addProduct(p.id)" [disabled]="p.stock === 0">
+                <span>
+                  {{ p.name }}
+                  <small>{{ p.category }} · {{ p.stock }} disponíveis</small>
+                </span>
+                <strong>{{ money(p.price) }}</strong>
+                <i class="feather icon-plus"></i>
+              </button>
+            } @empty {
+              <p class="empty">Nenhum produto encontrado.</p>
+            }
+          </div>
+        }
+      </div>
+      <div class="drawer-checkout">
+        <div class="total-line">
+          <span>Total da comanda</span>
+          <strong>{{ money(total(order)) }}</strong>
+        </div>
+        @if (order.status === 'Aberta') {
+          @if (role !== 'Atendente') {
+            <label class="field">
+              Forma de pagamento
+              <select [(ngModel)]="payment">
+                <option>Pix</option>
+                <option>Cartão</option>
+                <option>Dinheiro</option>
+                <option>Crédito do cliente</option>
+              </select>
+            </label>
+            @if (payment === 'Crédito do cliente') {
+              <p class="gold-text">Saldo disponível: {{ money(client(order.clientId).credit) }}</p>
+            }
+            @if (error) {
+              <div class="form-error" role="alert">{{ error }}</div>
+            }
+            <button class="btn-primary full" (click)="finishOrder()" [disabled]="!order.items.length">
+              <i class="feather icon-check"></i>
+              Finalizar comanda
+            </button>
+          } @else {
+            <p class="info-banner">Itens salvos. O caixa pode finalizar esta comanda.</p>
+          }
+        } @else {
+          <p class="positive">
+            <i class="feather icon-check-circle"></i>
+            Comanda finalizada e registrada nas vendas.
+          </p>
+        }
+      </div>
+    </section>
+  }
+
+  @if (modal) {
+    <div class="modal-overlay" (click)="modal = ''">
+      <section
+        class="ritual-modal"
+        appDialogFocus
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        (click)="$event.stopPropagation()"
+      >
+        <header>
+          <div>
+            <span class="eyebrow">RITUALS CLUB</span>
+            <h2 id="modal-title">
+              {{
+                modal === 'order'
+                  ? 'Nova comanda'
+                  : modal === 'client'
+                    ? form.id
+                      ? 'Editar cliente'
+                      : 'Novo cliente'
+                    : modal === 'supplier'
+                      ? form.id
+                        ? 'Editar fornecedor'
+                        : 'Novo fornecedor'
+                      : modal === 'product'
+                        ? form.id
+                          ? 'Editar produto'
+                          : 'Novo produto'
+                        : modal === 'staff'
+                          ? form.id
+                            ? 'Editar funcionário'
+                            : 'Novo funcionário'
+                          : modal === 'credit'
+                            ? 'Adicionar crédito'
+                            : modal === 'movement'
+                              ? 'Movimentação de caixa'
+                              : modal === 'restock'
+                                ? 'Repor estoque'
+                                : modal === 'cashOpen'
+                                  ? 'Abrir caixa'
+                                  : modal === 'cashClose'
+                                    ? 'Encerrar caixa'
+                                    : 'Restaurar demonstração'
+              }}
+            </h2>
+          </div>
+          <button class="icon-button" (click)="modal = ''" aria-label="Fechar formulário"><i class="feather icon-x"></i></button>
+        </header>
+        <form (ngSubmit)="save()">
+          @if (modal === 'order' || modal === 'credit') {
+            <label class="field">
+              Cliente
+              <select [(ngModel)]="form.clientId" name="clientId" required>
+                @for (c of state.clients; track c.id) {
+                  <option [ngValue]="c.id">{{ c.name }}</option>
+                }
+              </select>
+            </label>
+          }
+          @if (modal === 'order') {
+            <label class="field">
+              Local / Mesa
+              <input name="location" [(ngModel)]="form.location" placeholder="Ex.: Lounge · 05" required maxlength="60" />
+            </label>
+            <p class="muted">O e-mail e o telefone serão vinculados a partir do cadastro do cliente.</p>
+          }
+          @if (modal === 'client' || modal === 'supplier' || modal === 'product' || modal === 'staff') {
+            <label class="field">
+              Nome
+              <input name="name" [(ngModel)]="form.name" required maxlength="90" placeholder="Nome completo" />
+            </label>
+          }
+          @if (modal === 'client' || modal === 'supplier' || modal === 'staff') {
+            <label class="field">
+              E-mail
+              <input type="email" name="email" [(ngModel)]="form.email" required placeholder="nome@example.com" maxlength="120" />
+            </label>
+          }
+          @if (modal === 'client' || modal === 'supplier') {
+            <label class="field">
+              Telefone(s)
+              <input type="tel" name="phone" [(ngModel)]="form.phone" required placeholder="(11) 99999-9999" maxlength="100" />
+            </label>
+          }
+          @if (modal === 'client') {
+            <label class="field">
+              Categoria
+              <select name="tier" [(ngModel)]="form.tier">
+                <option>Member</option>
+                <option>Signature</option>
+                <option>Guest</option>
+              </select>
+            </label>
+          }
+          @if (modal === 'supplier') {
+            <label class="field">
+              Pessoa de contato
+              <input name="contact" [(ngModel)]="form.contact" required />
+            </label>
+            <label class="field">
+              Categoria
+              <input name="category" [(ngModel)]="form.category" required placeholder="Ex.: Orgânicos" />
+            </label>
+          }
+          @if (modal === 'product') {
+            <div class="form-columns">
+              <label class="field">
+                Categoria
+                <input name="category" [(ngModel)]="form.category" required />
+              </label>
+              <label class="field">
+                Preço de venda (R$)
+                <input type="number" min="0.01" step="0.01" name="price" [(ngModel)]="form.price" required />
+              </label>
+              <label class="field">
+                Estoque atual (un)
+                <input type="number" min="0" step="1" name="stock" [(ngModel)]="form.stock" required />
+              </label>
+              <label class="field">
+                Estoque mínimo (un)
+                <input type="number" min="0" step="1" name="minimum" [(ngModel)]="form.minimum" required />
+              </label>
+            </div>
+            <label class="field">
+              Fornecedor
+              <select name="supplierId" [(ngModel)]="form.supplierId">
+                @for (s of state.suppliers; track s.id) {
+                  <option [ngValue]="s.id">{{ s.name }}</option>
+                }
+              </select>
+            </label>
+          }
+          @if (modal === 'staff') {
+            <label class="field">
+              Perfil de acesso
+              <select name="role" [(ngModel)]="form.role">
+                <option>Gerente</option>
+                <option>Caixa</option>
+                <option>Atendente</option>
+              </select>
+            </label>
+            <label class="checkbox-field">
+              <input type="checkbox" name="active" [(ngModel)]="form.active" />
+              Acesso ativo
+            </label>
+          }
+          @if (modal === 'movement') {
+            <label class="field">
+              Tipo
+              <select name="type" [(ngModel)]="form.type">
+                <option>Suprimento</option>
+                <option>Sangria</option>
+              </select>
+            </label>
+          }
+          @if (modal === 'restock') {
+            <p>{{ form.name }} · Estoque atual: {{ form.stock }} un</p>
+          }
+          @if (['credit', 'movement', 'restock', 'cashOpen'].includes(modal)) {
+            <label class="field">
+              {{
+                modal === 'restock' ? 'Quantidade de entrada (un)' : modal === 'cashOpen' ? 'Saldo inicial em dinheiro (R$)' : 'Valor (R$)'
+              }}
+              <input
+                type="number"
+                name="amount"
+                [(ngModel)]="form.amount"
+                [min]="modal === 'cashOpen' ? 0 : modal === 'restock' ? 1 : 0.01"
+                [step]="modal === 'restock' ? 1 : 0.01"
+                required
+                placeholder="0"
+              />
+            </label>
+          }
+          @if (modal === 'credit' || modal === 'movement') {
+            <label class="field">
+              Descrição
+              <input name="note" [(ngModel)]="form.note" required placeholder="Motivo da movimentação" maxlength="140" />
+            </label>
+          }
+          @if (modal === 'cashClose') {
+            <p>
+              Saldo em dinheiro:
+              <strong>{{ money(cashBalance(state)) }}</strong>
+              .
+            </p>
+            <p>O encerramento bloqueia novos pagamentos até a próxima abertura.</p>
+            @if (openOrders.length) {
+              <div class="info-banner">Ainda há {{ openOrders.length }} comandas abertas. Finalize-as para encerrar.</div>
+            }
+          }
+          @if (modal === 'reset') {
+            <p>Restaurar os dados fictícios iniciais? Os cadastros e as operações feitos nesta demonstração serão substituídos.</p>
+          }
+          @if (error) {
+            <div class="form-error" role="alert">{{ error }}</div>
+          }
+          <div class="modal-actions">
+            <button type="button" class="btn-outline" (click)="modal = ''">Cancelar</button>
+            <button type="submit" class="btn-primary">
+              {{
+                modal === 'reset'
+                  ? 'Restaurar dados'
+                  : modal === 'cashClose'
+                    ? 'Confirmar encerramento'
+                    : modal === 'order'
+                      ? 'Abrir comanda'
+                      : 'Salvar'
+              }}
+            </button>
+          </div>
+        </form>
+      </section>
+    </div>
+  }
+  @if (toast) {
+    <div class="toast-message" role="status">
+      <i class="feather icon-check-circle"></i>
+      {{ toast }}
+      <button (click)="toast = ''" aria-label="Fechar aviso"><i class="feather icon-x"></i></button>
+    </div>
+  }
+}
