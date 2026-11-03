@@ -18,7 +18,7 @@
           "builder": "@angular/build:application",
           "options": {
             "allowedCommonJsDependencies": ["apexcharts"],
-            "outputPath": "dist",
+            "outputPath": "docs",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["@angular/localize/init"],
